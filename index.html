@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+   <table border="1">
+   	 <thead id="rep_grouping_header">
+   	 	 
+   	 </thead>
+      
+    <tbody id="rep_grouping_body">
+       
+    </tbody>
+  </table>
+
+
+  <script>
+  		let org_json = 	`{"code":200,"msg":"success","data":{"id":22,"reportName":"Job Manager Report","rows":[{"level":1,"columnTitle":"Task Assignee","rowName":"Peter Choy","summary":{"entityName":"254( count )"},"children":null,"data":[{"entityCode":"1079","entityName":"Rayonier NZ Ltd","generatedDate":"01-02-2021","taskAssignee":"Peter Choy","taskStatus":"completed","completedDate":"25-02-2021"},{"entityCode":"3041","entityName":"Saatchi & Saatchi","generatedDate":"01-01-2021","taskAssignee":"Peter Choy","taskStatus":"completed","completedDate":"11-01-2021"},{"entityCode":"3121","entityName":"A J Park","generatedDate":"01-01-2021","taskAssignee":"Peter Choy","taskStatus":"completed","completedDate":"11-01-2021"}]}],"columns":[{"id":"entityCode","name":"Entity Code","order":1,"type":"string","isSection":null,"columns":null},{"id":"entityName","name":"Entity Name","order":2,"type":"string","isSection":null,"columns":null},{"id":"taskAssignee","name":"Task Assignee","order":3,"type":"string","isSection":null,"columns":null},{"id":"taskStatus","name":"Task Status","order":4,"type":"string","isSection":null,"columns":null},{"id":"completedDate","name":"Task Submitted Date","order":5,"type":"date","isSection":null,"columns":null},{"id":"generatedDate","name":"Task Generated Date","order":6,"type":"date","isSection":null,"columns":null}],"showSection":false}}`;
+  		//let level_3_data = "";
+  		org_json = JSON.parse(org_json);
+  		let data = org_json.data;
+  		let level_3_data = data.rows[0].data;
+  		let columns = data.columns;
+  		console.log("_level_3_data", data.rows)
+  		render_report_data(columns,level_3_data);
+  		function render_report_data(columns, level_3_data, row_conter, default_col, default_top_data, level_no, has_no_summry) {
+  			level_no = 0;
+  			row_conter = 0;
+		    for (var d = 0; d < level_3_data.length; d++) {
+		        var data_obj = level_3_data[d];
+		        var top_data = '';
+		      
+		        if (row_conter === 0) {
+
+		            var head_cols = "<tr>";
+		            head_cols += default_col;
+		            for (var col = 0; col < columns.length; col++) {
+		                head_cols += "<th style='white-space:nowrap;text-align: left;padding: 10px 10px;font-size: 14px;line-height: 1.5em;border-left: 1px solid #ffffff;'>" + columns[col]["name"] + "</th>";
+		            }
+		            head_cols += "</tr>";
+		            
+		            $("#rep_grouping_header").html(head_cols);
+		        }
+		        var data_row = "<tr>";
+		        data_row += top_data;
+		        for (var col = 0; col < columns.length; col++) {
+		            var col_id = columns[col]["id"];
+		            if (typeof data_obj[col_id] === "undefined") {
+		                data_row += "<td></td>";
+		            } else {
+		                var td_data = data_obj[col_id];
+		               
+		                if (td_data === null) {
+		                    td_data = '';
+		                }
+		                var td_text = "";
+		                var className = "";
+		                if (typeof td_data !== "undefined" && td_data !== null && td_data !== "null") {
+		                    td_text = td_data;
+		                }
+		               
+		                data_row += "<td class='"+className+"' style='text-align: left;  padding: 10px 10px;font-size: 14px;line-height: 1.5em;border-top: 1px solid #dddee2;border-left: 1px solid #dddee2;'><div class='entMainList_td_text report_content'>"+td_data+"</div></td>";
+		            }
+		        }
+		        data_row += "</tr>";
+		        $("#rep_grouping_body").append(data_row);
+		    }
+		}
+
+  </script>
+</body>
+</html>
